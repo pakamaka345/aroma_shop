@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Головна</title>
+    <link rel="stylesheet" href="path/to/your/css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+</head>
+<body>
+    <header>
+    <div class="container">
+        <div class="header-left">
+            <h1>ITAroma</h1>
+            <p>магазин ароматичних продуктів</p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="/">Головна</a></li>
+                <li><a href="/store">Магазин</a></li>
+                <li><a href="#">Про нас</a></li>
+                <li><a href="<%= session[:user_id] ? '#' : login_path %>"><i class="material-icons">favorite</i></a></li>
+                <% if session[:user_id] %>
+                    <li><a href="<%= profile_path %>"><i class="material-icons">person</i></a></li>
+                <% else %>
+                    <li><a href="<%= login_path %>">Увійти</a></li>
+                <% end %>
+                <li><a href="<%= session[:user_id] ? '#' : login_path %>"><i class="material-icons">shopping_cart</i></a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+    <main>
+        <section class="hero">
+            <div class="hero-text">
+                <h2>Головна</h2>
+                <style>
+                    .hero {
+                        position: relative;
+                        height: 300px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        margin-bottom: 50px;
+                    }
+
+                    .hero::before {
+                        content: "";
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        bottom: 0;
+                        left: 0;
+                        background-image: url(<%= asset_path 'main.jpg' %>);
+                        background-repeat: no-repeat;
+                        background-size: cover;
+                        filter: blur(2px); 
+                        z-index: -1;
+                    }
+                </style>
+            </div>
+        </section>
+        <section class="content">
+            <div class="container">
+                <div class="promo">
+                    <%= image_tag("flower.jpg", alt: "Aroma Products") %>
+                    <div class="promo-text">
+                        <h3>Швидше переглянь наш новий асортимент!</h3>
+                        <p>В магазинах твого міста немає того, що шукаєш? У нас ти знайдеш усі найкращі новинки.</p>
+                        <p>Скоріше замов на сайті чи забери в пункті самовивозу!</p>
+                        <a href="/store" class="btn">Відкрити магазин</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-left">
+                <h1>ITAroma</h1>
+                <p>магазин ароматичних продуктів</p>
+            </div>
+            <nav class="footer-nav">
+                <ul>
+                    <li><a href="/">Головна</a></li>
+                    <li><a href="/store">Магазин</a></li>
+                    <li><a href="#">Про нас</a></li>
+                </ul>
+            </nav>
+            <div class="social-media">
+                <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.twitter.com"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.facebook.com"><i class="fab fa-facebook-f"></i></a>
+            </div>
+            <div class="payment-methods">
+                <i class="fab fa-cc-visa"></i> Visa
+                <br>
+                <i class="fab fa-cc-mastercard"></i> Mastercard
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

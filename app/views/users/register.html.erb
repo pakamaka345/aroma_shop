@@ -1,0 +1,60 @@
+<html>
+    <head>
+        <title>Register</title>
+        <%= stylesheet_link_tag 'register' %>
+    </head>
+    <body>
+        <div class="main-div">
+            <% if @user.errors.any? %>
+                <div class="alert-danger">
+                    <%= @user.errors.full_messages.each do |message| %>
+                        <% puts message %>
+                        <div> <%= message %> </div>
+                    <% end %>
+                </div>
+            <% end %>
+
+            <%= form_with(model: @user, url: register_path, id: "register-form") do |f| %>
+                <h1 id="register-title">Реєстрація</h1>
+                <div class="form-group">
+                    <%= f.label :username, "Логін користувача", id: "username-label" %>
+                    <%= f.text_field :username, id: "username-field", value: @user.errors[:username].any? ? @user.errors[:username].first : @user.username %>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <%= f.label :first_name, "Ім'я", id: "first-name-label" %>
+                        <%= f.text_field :first_name, id: "first-name-field" %>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <%= f.label :last_name, "Прізвище", id: "last-name-label" %>
+                        <%= f.text_field :last_name, id: "last-name-field" %>
+                    </div>
+                </div>
+                <div class="form-row">
+                <div class="form-group col-md-6">
+                    <%= f.label :address, "Адреса", id: "address-label" %>
+                    <%= f.text_field :address, id: "address-field" %>
+                </div>
+                <div class="form-group col-md-6">
+                    <%= f.label :phone_number, "Номер телефону", id: "phone-number-label" %>
+                    <%= f.telephone_field :phone_number, id: "phone-number-field" %>
+                </div>
+                </div>
+                <div class="form-group">
+                    <%= f.label :email, "Електронна пошта", id: "email-label" %>
+                    <%= f.email_field :email, id: "email-field" %>
+                </div>
+                <div class="form-group">
+                    <%= f.label :password, "Пароль", id: "password-label" %>
+                    <%= f.password_field :password, id: "password-field" %>
+                </div>
+                <div class="form-group">
+                    <%= f.submit "Зареєструватися", id: "register-button" %>
+                </div>
+                <div class="form-group">
+                    <%= link_to 'Вже маєте аккаунт?', login_path, class: 'register-button' %>
+                </div>
+            <% end %>
+        </div>
+    </body>
+</html>

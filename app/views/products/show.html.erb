@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= @product.product_name %> - ITAroma</title>
+    <%= stylesheet_link_tag 'show.css' %>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-left">
+                <h1>ITAroma</h1>
+                <p>магазин ароматичних продуктів</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/">Головна</a></li>
+                    <li><a href="/products">Магазин</a></li>
+                    <li><a href="#">Про нас</a></li>
+                    <li><a href="<%= session[:user_id] ? '#' : login_path %>"><i class="material-icons">favorite</i></a></li>
+                    <% if session[:user_id] %>
+                        <li><a href="<%= profile_path %>"><i class="material-icons">person</i></a></li>
+                    <% else %>
+                        <li><a href="<%= login_path %>">Увійти</a></li>
+                    <% end %>
+                    <li><a href="<%= session[:user_id] ? '#' : login_path %>"><i class="material-icons">shopping_cart</i></a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <section class="hero">
+        <div class="hero-text">
+            <style>
+                .hero {
+                    position: relative;
+                    height: 300px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin-bottom: 50px;
+                }
+
+                .hero::before {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    left: 0;
+                    background-image: url(<%= asset_path 'main.jpg' %>);
+                    background-repeat: no-repeat;
+                    background-size: cover;
+                    filter: blur(2px); 
+                    z-index: -1;
+                }
+            </style>
+        </div>
+    </section>
+
+    <main>
+        <div class="product-details">
+            <div class="product-info">
+                <div class="product-name-category">
+                    <h2><%= @product.product_name %></h2>
+                    <p class="category"><%= @product.category.category_name %></p>
+                    <div class="stars">
+                        <% average_rating = Review.where(product_id: @product.id).average(:rating_value).to_f %>
+                        <% for i in 1..5 %>
+                            <% if i <= average_rating %>
+                                <i class="fas fa-star"></i>
+                            <% elsif i - 0.5 <= average_rating %>
+                                <i class="fas fa-star-half-alt"></i>
+                            <% else %>
+                                <i class="far fa-star"></i>
+                            <% end %>
+                        <% end %>
+                        <span>(<%= Review.where(product_id: @product.id).count %> reviews)</span>
+                    </div>
+                </div>
+                <div class="product-image">
+                    <img src="<%= @product.image_url %>" alt="<%= @product.product_name %>">
+                </div>
+                <div class="product-buy">
+                    <div class="price"><%= @product.price %> ₴</div>
+                    <div class="buy-now">
+                        <a href="#">Купити</a>
+                    </div>
+                    <p>Є в наявності</p>
+                    <p>Код товару: <%= @product.id %></p>
+                </div>
+            </div>
+
+            <div class="product-description">
+                <h3>Опис</h3>
+                <p><%= @product.description %></p>
+            </div>
+
+            <div class="product-reviews">
+                <h3>Відгуки</h3>
+                <% @reviews.each do |review| %>
+                    <div class="review">
+                        <h4><%= review.user.first_name %></h4>
+                        <div class="stars">
+                            <% for i in 1..5 %>
+                                <% if i <= review.rating_value %>
+                                    <i class="fas fa-star"></i>
+                                <% else %>
+                                    <i class="far fa-star"></i>
+                                <% end %>
+                            <% end %>
+                        </div>
+                        <p><%= review.review_text %></p>
+                    </div>
+                <% end %>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-left">
+                <h1>ITAroma</h1>
+                <p>магазин ароматичних продуктів</p>
+            </div>
+            <nav class="footer-nav">
+                <ul>
+                    <li><a href="/">Головна</a></li>
+                    <li><a href="/store">Магазин</a></li>
+                    <li><a href="#">Про нас</a></li>
+                </ul>
+            </nav>
+            <div class="social-media">
+                <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.twitter.com"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.facebook.com"><i class="fab fa-facebook-f"></i></a>
+            </div>
+            <div class="payment-methods">
+                <i class="fab fa-cc-visa"></i> Visa
+                <br>
+                <i class="fab fa-cc-mastercard"></i> Mastercard
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

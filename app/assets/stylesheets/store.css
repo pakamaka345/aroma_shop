@@ -1,0 +1,221 @@
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.product-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+    margin-top: 30px;
+}
+
+.product-item {
+    flex: 0 0 calc(20%);
+
+    padding: 10px;
+    
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    margin: 0 30px;
+    padding-bottom: 60px;
+}
+
+.product-item:hover {
+    transform: translateY(-5px);
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.product-link img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.product-link h3 {
+    font-size: 1.2em;
+    margin-top: 10px;
+}
+
+.price {
+    font-family: 'Apple Chancery';
+    margin-top: 15px;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.category {
+    color: lightgray;
+    margin-bottom: 20px;
+}
+
+.buy-now {
+    display: none;
+}
+
+.product-item:hover .buy-now {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(30px);
+}
+
+.buy-now a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    height: 50px;
+    background-color: dimgray;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.buy-now a:hover {
+    background-color: #333;
+}
+
+.stars {
+    display: flex;
+    align-items: center;
+}
+
+.stars i {
+    margin-right: 2px;
+    color: #f8d64e;
+}
+
+.stars span {
+    margin-left: 5px;
+    color: #555;
+    font-size: 0.9em;
+}
+
+.category-selection {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 60px;
+}
+
+.category-button {
+    margin: -15px 10px;
+    padding: 10px;
+    background-color: #ffffff; /* Change to white */
+    border: 1px solid #000000; /* Change to black */
+    border-radius: 5px;
+    text-decoration: none;
+    color: #000000; /* Change to black */
+    font-weight: bold;
+    width: 100px; /* Add this line to make all buttons the same width */
+    text-align: center; /* Add this line to center the text */
+    font-size: 24px;
+}
+
+.category-button:first-child {
+    background-color: #000000; /* Change to black */
+    color: #ffffff; /* Change to white */
+}
+
+.category-button:hover {
+    background-color: #ddd;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-toggle {
+    background-color: #ffffff !important; /* Change to white */
+    color: #000000 !important; /* Change to black */
+    padding: 10px;
+    font-size: 20px;
+    border: 1px solid #000000 !important; /* Change to black */
+    cursor: pointer;
+    width: 100px; /* Add this line to make all buttons the same width */
+    text-align: center; /* Add this line to center the text */
+}
+
+.dropdown-toggle:hover, .dropdown-toggle:focus {
+    background-color: #ddd;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    border: 1px solid #000000; /* Add this line to add a border */
+}
+
+.dropdown-menu a {
+    color: black;
+    padding: 8px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 18px;
+}
+
+.dropdown-menu a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+footer {
+    background-color: #f8f8f8;
+    padding: 20px 0;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-left h1 {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+.footer-nav ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+}
+
+.footer-nav ul li {
+    margin: 0 10px;
+}
+
+.footer-nav ul li a {
+    text-decoration: none;
+    color: #333;
+}
+
+.social-media a {
+    margin: 0 10px;
+    color: #333;
+    font-size: 1.5em;
+}
+
+.payment-methods {
+    font-size: 0.9em;
+    color: #777;
+}
+
+.payment-methods i {
+    margin-right: 5px;
+}

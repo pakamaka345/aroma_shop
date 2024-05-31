@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <header>
@@ -89,21 +90,64 @@
                     <div class="buy-now">
                         <a href="#">Купити</a>
                     </div>
-                    <p>Є в наявності</p>
+                    <p><%= @product.quantity > 0 ? 'Є в наявності' : 'Немає в наявності' %></p>
                     <p>Код товару: <%= @product.id %></p>
                 </div>
             </div>
 
             <div class="product-description">
-                <h3>Опис</h3>
+                <h3>Опис:</h3> <br>
                 <p><%= @product.description %></p>
             </div>
+
+            <% if session[:user_id] %>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#reviewModal">Додати відгук</button>
+
+                <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="reviewModalLabel">Новий відгук</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <%= form_for Review.new, url: {controller: "reviews", action: "create"}, html: {id: 'review-form'} do |f| %>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        
+                                        <div class="rating-stars">
+                                            <% 5.times do |i| %>
+                                                <i class="fas fa-star" data-value="<%= i + 1 %>"></i>
+                                            <% end %>
+                                        </div>
+                                        <%= f.hidden_field :rating_value, id: 'rating_value', class: 'form-control' %>
+                                    </div>
+                                    <div class="form-group">
+                                        
+                                        <%= f.text_area :review_text, class: 'form-control', rows: 5 %>
+                                    </div>
+                                    <%= f.hidden_field :product_id, value: @product.id %>
+                                    <%= f.hidden_field :user_id, value: session[:user_id] %>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+                                    <%= f.submit "Додати відгук", class: 'btn btn-primary' %>
+                                </div>
+                            <% end %>
+                        </div>
+                    </div>
+                </div>
+            <% else %>
+                <%= link_to 'Додати відгук', login_path, class: 'btn btn-primary' %>
+            <% end %>
+
 
             <div class="product-reviews">
                 <h3>Відгуки</h3>
                 <% @reviews.each do |review| %>
                     <div class="review">
-                        <h4><%= review.user.first_name %></h4>
+                        <h4><%= review.user.first_name %> <span><%=  review.created_at.strftime("%d/%m/%Y %H:%M:%S") %></span></h4>
                         <div class="stars">
                             <% for i in 1..5 %>
                                 <% if i <= review.rating_value %>
@@ -145,5 +189,37 @@
             </div>
         </div>
     </footer>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const stars = document.querySelectorAll('.rating-stars i');
+            const ratingValue = document.getElementById('rating_value');
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    const value = this.getAttribute('data-value');
+                    ratingValue.value = value;
+                    stars.forEach(s => {
+                        if (s.getAttribute('data-value') <= value) {
+                            s.classList.add('rated');
+                        } else {
+                            s.classList.remove('rated');
+                        }
+                    });
+                });
+            });
+
+            document.getElementById('review-form').addEventListener('submit', function(event) {
+                if (ratingValue.value === '') {
+                    alert('Будь ласка, оберіть рейтинг.');
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

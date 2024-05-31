@@ -15,4 +15,5 @@ Rails.application.routes.draw do
   get 'products/subcategory/:subcategory_id', to: 'products#subcategory', as: 'subcategory_products'
 
   resources :products, only: [:index, :show]
+  resources :reviews, only: [:create]
 end

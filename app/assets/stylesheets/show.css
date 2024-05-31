@@ -7,18 +7,33 @@
 
 .product-info {
     display: flex;
+    justify-content: space-between; /* Add this */
     align-items: flex-start;
-    margin-bottom: 20px;
+    margin-bottom: 100px;
+    margin-top: 30px;
 }
 
 .product-name-category {
-    margin-right: 20px;
     text-align: left;
+    margin-top: 100px;
+    margin-left: 20px;
+}
+
+.product-name-category h2 {
+    margin: 0;
+    font-size: 48px;
+    font-weight: bold;
+    font-family: 'Garamond', serif;
+}
+
+.category {
+    color: lightgray;
+    margin-bottom: 20px;
+    font-size: 18px;
 }
 
 .product-image {
-    margin-right: 20px;
-    
+    flex: 0 0 calc(50%);
 }
 
 .product-image img {
@@ -27,48 +42,171 @@
 }
 
 .product-buy {
+    margin-top: 100px;
     text-align: left;
+    margin-right: 20px;
 }
 
 .product-buy .price {
-    font-size: 1.5em;
+    font-size: 2em;
     font-weight: bold;
     margin-bottom: 10px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 .product-buy .buy-now a {
-    background-color: #4CAF50;
+    background-color: rgb(52, 52, 52);
     color: white;
-    padding: 10px 20px;
+    padding: 20px 100px;
     border-radius: 5px;
     text-decoration: none;
     margin-bottom: 10px;
     display: inline-block;
+    font-size: 1.5em;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.product-buy .buy-now a:hover {
+    background-color: rgb(32, 32, 32);
 }
 
 .product-buy p {
     margin: 5px 0;
 }
-
 .product-description,
 .product-reviews {
     width: 100%;
     max-width: 800px;
-    margin-bottom: 20px;
+    margin-bottom: 40px; /* Increase space between description and reviews */
     text-align: left;
+    border: 1px solid #000; /* Add border */
+    padding: 20px; /* Add padding */
+}
+
+.product-description p {
+    font-size: 1.2em; /* Increase font size for description */
+}
+
+.product-reviews {
+    margin-top: 50px;
+}
+
+.product-reviews h3 {
+    margin: 0;
+    font-size: 2em;
+    font-family: 'Garamond', serif;
+    margin-bottom: 20px;
 }
 
 .product-reviews .review {
-    margin-bottom: 15px;
+    margin-bottom: 50px;
 }
 
 .product-reviews .review h4 {
     margin: 0;
     font-size: 1.2em;
 }
+.product-reviews .review h4 span {
+    margin: 0;
+    font-size: 15px;
+    color: gray;
+    margin-left: 10px;
+    font-style: italic;
+}
 
 .product-reviews .stars {
     display: flex;
     align-items: center;
     margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.product-reviews p {
+    margin-top: 10px;
+    font-size: 20px;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+
+.modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: .3rem;
+    outline: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+.modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid #dee2e6;
+    border-top-left-radius: .3rem;
+    border-top-right-radius: .3rem;
+}
+
+.modal-body {
+    position: relative;
+    flex: 1 1 auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.rating-stars {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.rating-stars i {
+    font-size: 24px;
+    color: lightgray;
+    margin: 0 5px;
+}
+
+.rating-stars .rated {
+    color: black;
+}
+
+.form-group {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.btn-primary {
+    background-color: #ff4d4d;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #cc0000;
+}
+
+.modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 1rem;
+    border-top: 1px solid #dee2e6;
+    border-bottom-right-radius: .3rem;
+    border-bottom-left-radius: .3rem;
 }

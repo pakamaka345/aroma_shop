@@ -1,31 +1,60 @@
-# Files in the config/locales directory are used for internationalization and
-# are automatically loaded by Rails. If you want to use locales other than
-# English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t "hello"
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t("hello") %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# To learn more about the API, please read the Rails Internationalization guide
-# at https://guides.rubyonrails.org/i18n.html.
-#
-# Be aware that YAML interprets the following case-insensitive strings as
-# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
-# must be quoted to be interpreted as strings. For example:
-#
-#     en:
-#       "yes": yup
-#       enabled: "ON"
-
 en:
-  hello: "Hello world"
+  магазин ароматичних продуктів: "Store of aromatic products"
+  Головна: "Home"
+  Магазин: "Store"
+  Про нас: "About Us"
+  Увійти: "Login"
+  Ваші улюблені товари: "Your Favorite Products"
+  Відгуки: "Reviews"
+  Купити: "Buy"
+  Швидше переглянь наш новий асортимент!: "Check out our new assortment faster!"
+  В магазинах твого міста немає того, що шукаєш? У нас ти знайдеш усі найкращі новинки.: "Can't find what you're looking for in your city's stores? You'll find all the best new items with us."
+  Скоріше замов на сайті чи забери в пункті самовивозу!: "Order online or pick up at a pickup point sooner!"
+  Відкрити магазин: "Open Store"
+  Всі: "All"
+  відгуків: "reviews"
+  Є в наявності: "In stock"
+  Немає в наявності: "Out of stock"
+  Код товару: "Product Code"
+  Опис: "Description"
+  Додати відгук: "Add Review"
+  Новий відгук: "New Review"
+  Додати коментар...: "Add Comment..."
+  Будь ласка, оберіть рейтинг.: "Please select a rating."
+  Авторизація: "Authorization"
+  Email або ім'я користувача: "Email or Username"
+  Пароль: "Password"
+  Ще немає аккаунта?: "Don't have an account yet?"
+  Забув пароль?: "Forgot Password?"
+  Профіль: "Profile"
+  Адмін-панель: "Admin Panel"
+  Додати нового користувача: "Add New User"
+  Керувати користувачами: "Manage Users"
+  Історія замовлень: "Order History"
+  Номер замовлення: "Order Number"
+  Всього: "Total"
+  Дата: "Date"
+  Редагувати профіль: "Edit Profile"
+  Ім'я: "First Name"
+  Прізвище: "Last Name"
+  Email: "Email"
+  Зберегти зміни: "Save Changes"
+  Вийти: "Log Out"
+  Реєстрація: "Registration"
+  Зареєструватися: "Sign Up"
+  Логін користувача: "Username"
+  Адреса: "Address"
+  Номер телефону: "Phone Number"
+  Електронна пошта: "Email"
+  Ваші замовлення: "Your Orders"
+  Ваш кошик: "Your Cart"
+  Товар: "Product"
+  Назва: "Name"
+  Кількість: "Quantity"
+  Ціна: "Price"
+  Дія: "Action"
+  Видалити: "Delete"
+  Загальна вартість: "Total Cost"
+  Ваш кошик порожній: "Your cart is empty"
+  Оформити замовлення: "Place an Order"
+  checkout: "Place an Order"

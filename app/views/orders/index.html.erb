@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Магазин</title>
+    <%= stylesheet_link_tag 'order.css' %>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-left">
+                <h1>ITAroma</h1>
+                <p><%= t('магазин ароматичних продуктів') %></p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/"><%= t('Головна') %></a></li>
+                    <li><a href="/products"><%= t('Магазин') %></a></li>
+                    <li><a href="#"><%= t('Про нас') %></a></li>
+                    <li><a href="<%= session[:user_id] ? '/favourites' : login_path %>"><i class="material-icons">favorite</i></a></li>
+                    <% if session[:user_id] %>
+                        <li><a href="<%= profile_path %>"><i class="material-icons">person</i></a></li>
+                    <% else %>
+                        <li><a href="<%= login_path %>"><%= t('Увійти') %></a></li>
+                    <% end %>
+                    <li>
+                    <a href="<%= session[:user_id] ? '/orders' : login_path %>">
+                        <i class="material-icons">shopping_cart</i>
+                        <% if session[:user_id] %>
+                        <%= Order.find_by(user_id: session[:user_id]).order_items.count %>
+                        <% end %>
+                    </a>
+                    </li>
+                    <li> 
+                        <%= link_to image_tag(asset_path('ukraine.png')), url_for(locale: 'uk') %>
+                        <%= link_to image_tag(asset_path('united-kingdom.png')), url_for(locale: 'en') %>
+                    </li>
+                </ul>
+            </nav>
+            
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-text">
+                <h2><%= t('Ваші замовлення') %></h2>
+                <style>
+                    .hero {
+                        position: relative;
+                        height: 300px;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        margin-bottom: 50px;
+                    }
+
+                    .hero::before {
+                        content: "";
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        bottom: 0;
+                        left: 0;
+                        background-image: url(<%= asset_path 'main.jpg' %>);
+                        background-repeat: no-repeat;
+                        background-size: cover;
+                        filter: blur(2px); 
+                        z-index: -1;
+                    }
+                </style>
+            </div>
+        </section>
+        <div class="list-items">
+            <h2><%= t('Ваш кошик') %></h2>
+            <% if @order_items.any? %>
+            <table>
+                <thead>
+                <tr>
+                    <th><%= t('Товар') %></th>
+                    <th class="name-left"><%= t('Назва') %></th>
+                    <th><%= t('Кількість') %></th>
+                    <th><%= t('Ціна') %></th>
+                    <th><%= t('Дія') %></th>
+                </tr>
+                </thead>
+                <tbody>
+                <% @order_items.each do |item| %>
+                    <tr>
+                        <td><%= image_tag item.product.image_url, class: 'product-image' %></td>
+                        <td class='product_name'><%= item.product.product_name %></td>
+                        <td>
+                            <%= button_to '+', update_quantity_path(item.id, quantity: item.quantity + 1), method: :post, class: 'quantity-button' %>
+                            <span class="quantity"><%= item.quantity %></span>
+                            <%= button_to '-', update_quantity_path(item.id, quantity: item.quantity - 1), method: :post, class: 'quantity-button' if item.quantity > 1 %>
+                        </td>
+                        <td><%= item.product.price * item.quantity %> ₴</td>
+                        <td><%= button_to t('Видалити'), remove_from_cart_path(item.id), method: :delete, class: 'delete-button' %></td>
+                    </tr>
+                <% end %>
+                </tbody>
+            </table>
+            <div class="checkout">
+                <h3><%= t('Загальна вартість') %> <%= @order_items.sum { |item| item.product.price * item.quantity } %> ₴</h3>
+                <button type="button" class="checkout-button" data-toggle="modal" data-target="#checkoutModal"><%= t('Оформити замовлення') %></button>
+            </div>
+
+            <div class="modal fade" id="checkoutModal" tabindex="-1" role="dialog" aria-labelledby="checkoutModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="checkoutModalLabel"><%= t('Оформлення замовлення') %></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <%= form_with url: checkout_path, method: :post, local: true do |f| %>
+                        <div class="form-group">
+                            <%= f.label :city, t('Місто') %>
+                            <%= f.text_field :city, class: 'form-control' %>
+                        </div>
+                        <div class="form-group">
+                            <%= f.label :address, t('Адреса') %>
+                            <%= f.text_field :address, class: 'form-control' %>
+                        </div>
+                        <!-- Add Stripe Elements for Apple Pay and Google Pay -->
+                        <div class="form-group">
+                            <label for="card-element"><%= t('Спосіб оплати') %></label>
+                            <div id="card-element"><!-- A Stripe Element will be inserted here. --></div>
+                            <div id="card-errors" role="alert"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <%= f.submit t('Оформити'), class: 'btn btn-primary' %>
+                        </div>
+                        <% end %>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <% else %>
+            <p><%= t('Ваш кошик порожній') %></p>
+            <% end %>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-container">
+        <div class="footer-left">
+            <h1>ITAroma</h1>
+            <p><%= t('магазин ароматичних продуктів') %></p>
+        </div>
+        <nav class="footer-nav">
+            <ul>
+            <li><a href="<%= root_path %>"><%= t('Головна') %></a></li>
+            <li><a href="<%= products_path %>"><%= t('Магазин') %></a></li>
+            <li><a href="#"><%= t('Про нас') %></a></li>
+            </ul>
+        </nav>
+        <div class="social-media">
+            <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.twitter.com"><i class="fab fa-twitter"></i></a>
+            <a href="https://www.facebook.com"><i class="fab fa-facebook-f"></i></a>
+        </div>
+        <div class="payment-methods">
+            <i class="fab fa-cc-visa"></i> Visa
+            <br>
+            <i class="fab fa-cc-mastercard"></i> Mastercard
+        </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("turbolinks:load", function() {
+        if (document.getElementById("card-element")) {
+            var stripe = Stripe('your-publishable-key-here');
+            var elements = stripe.elements();
+
+            var style = {
+            base: {
+                color: "#32325d",
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: "antialiased",
+                fontSize: "16px",
+                "::placeholder": {
+                color: "#aab7c4"
+                }
+            },
+            invalid: {
+                color: "#fa755a",
+                iconColor: "#fa755a"
+            }
+            };
+
+            var card = elements.create("card", { style: style });
+            card.mount("#card-element");
+
+            card.on("change", function(event) {
+            var displayError = document.getElementById("card-errors");
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = "";
+            }
+            });
+
+            var form = document.querySelector("form");
+            form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            stripe.createToken(card).then(function(result) {
+                if (result.error) {
+                var errorElement = document.getElementById("card-errors");
+                errorElement.textContent = result.error.message;
+                } else {
+                stripeTokenHandler(result.token);
+                }
+            });
+            });
+
+            function stripeTokenHandler(token) {
+            var form = document.querySelector("form");
+            var hiddenInput = document.createElement("input");
+            hiddenInput.setAttribute("type", "hidden");
+            hiddenInput.setAttribute("name", "stripeToken");
+            hiddenInput.setAttribute("value", token.id);
+            form.appendChild(hiddenInput);
+
+            form.submit();
+            }
+        }
+        });
+    </script>
+</body>
+</html>

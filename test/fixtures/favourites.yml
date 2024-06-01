@@ -2,10 +2,8 @@
 
 one:
   user: one
-  status: MyString
-  total: 9.99
+  product: one
 
 two:
   user: two
-  status: MyString
-  total: 9.99
+  product: two

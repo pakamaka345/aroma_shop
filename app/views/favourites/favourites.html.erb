@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= t('Головна') %></title>
-    <link rel="stylesheet" href="path/to/your/css">
+    <title>Favourites</title>
+    <%= stylesheet_link_tag 'store.css' %>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <header>
@@ -41,52 +42,71 @@
                     </li>
                 </ul>
             </nav>
+            
         </div>
     </header>
 
     <main>
-        <section class="hero">
-            <div class="hero-text">
-                <h2><%= t('Головна') %></h2>
-                <style>
-                    .hero {
-                        position: relative;
-                        height: 300px;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        margin-bottom: 50px;
-                    }
+    <section class="hero">
+        <div class="hero-text">
+            <h2><%= t('Ваші улюблені товари') %></h2>
+            <style>
+                .hero {
+                    position: relative;
+                    height: 300px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin-bottom: 50px;
+                }
 
-                    .hero::before {
-                        content: "";
-                        position: absolute;
-                        top: 0;
-                        right: 0;
-                        bottom: 0;
-                        left: 0;
-                        background-image: url(<%= asset_path 'main.jpg' %>);
-                        background-repeat: no-repeat;
-                        background-size: cover;
-                        filter: blur(2px); 
-                        z-index: -1;
-                    }
-                </style>
-            </div>
-        </section>
-        <section class="content">
-            <div class="container">
-                <div class="promo">
-                    <%= image_tag("flower.jpg", alt: "Aroma Products") %>
-                    <div class="promo-text">
-                        <h3><%= t('Швидше переглянь наш новий асортимент!') %></h3>
-                        <p><%= t('В магазинах твого міста немає того, що шукаєш? У нас ти знайдеш усі найкращі новинки.') %></p>
-                        <p><%= t('Скоріше замов на сайті чи забери в пункті самовивозу!') %></p>
-                        <a href="/store" class="btn"><%= t('Відкрити магазин') %></a>
+                .hero::before {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    left: 0;
+                    background-image: url(<%= asset_path 'main.jpg' %>);
+                    background-repeat: no-repeat;
+                    background-size: cover;
+                    filter: blur(2px); 
+                    z-index: -1;
+                }
+            </style>
+        </div>
+    </section>
+    <div class="product-grid">
+        <% @favourites.each_slice(3) do |favourite_slice| %>
+            <div class="product-row">
+                <% favourite_slice.each do |favourite| %>
+                    <div class="product-item">
+                        <a href="<%= product_path(favourite.product) %>" class="product-link">
+                            <img src="<%= favourite.product.image_url %>" alt="<%= favourite.product.product_name %>">
+                            <h3><%= favourite.product.product_name %></h3>
+                        </a>
+                        <p class="category"><%= favourite.product.category.category_name %></p>
+                        <div class="stars">
+                            <% average_rating = Review.where(product_id: favourite.product.id).average(:rating_value).to_f %>
+                            <% for i in 1..5 %>
+                                <% if i <= average_rating %>
+                                    <i class="fas fa-star"></i>
+                                <% elsif i - 0.5 <= average_rating %>
+                                    <i class="fas fa-star-half-alt"></i>
+                                <% else %>
+                                    <i class="far fa-star"></i>
+                                <% end %>
+                            <% end %>
+                            <span>(<%= Review.where(product_id: favourite.product.id).count %> <%= t('Відгуки') %>)</span>
+                        </div>
+                        <div class="price"><%= favourite.product.price %> ₴</div>
+                        <div class="buy-now">
+                            <a href="<%= product_path(favourite.product) %>"><%= t('Купити') %></a></div>
                     </div>
-                </div>
+                <% end %>
             </div>
-        </section>
+        <% end %>
+    </div>
     </main>
 
     <footer>

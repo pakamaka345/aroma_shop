@@ -36,19 +36,18 @@ class OrdersController < ApplicationController
   end
 
   def checkout
-    # Simulate processing payment using Stripe
-    token = params[:stripeToken]
-    if token
-      # Here you would typically use the Stripe API to process the payment.
-      # For this example, we are just going to assume the payment succeeded.
+    @order = current_order
 
-      @order = current_order
-      @order.update(status: 'complete', user_id: current_user.id, order_date: Time.current)
-
+    if params[:commit] == t('Оформити')
+      @order.update(status: 'completed', user_id: current_user.id, updated_at: Time.current)
       session[:order_id] = nil
       redirect_to root_path, notice: 'Order placed successfully.'
     else
-      redirect_to orders_path, alert: 'Payment failed. Please try again.'
+      @first_name = params[:first_name]
+      @last_name = params[:last_name]
+      @city = params[:city]
+      @address = params[:address]
+      render :checkout_form
     end
   end
 

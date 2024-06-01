@@ -33,12 +33,15 @@
                         <li><a href="<%= login_path %>"><%= t('Увійти') %></a></li>
                     <% end %>
                     <li>
-                    <a href="<%= session[:user_id] ? '/orders' : login_path %>">
-                        <i class="material-icons">shopping_cart</i>
-                        <% if session[:user_id] %>
-                        <%= Order.find_by(user_id: session[:user_id]).order_items.count %>
-                        <% end %>
-                    </a>
+                        <a href="<%= session[:user_id] ? orders_path : login_path %>">
+                            <i class="material-icons">shopping_cart</i>
+                            <% if session[:user_id] %>
+                            <% pending_order = Order.find_by(user_id: session[:user_id], status: 'pending') %>
+                            <% if pending_order && pending_order.order_items.count > 0 %>
+                                <%= pending_order.order_items.count %>
+                            <% end %>
+                            <% end %>
+                        </a>
                     </li>
                     <li> 
                         <%= link_to image_tag(asset_path('ukraine.png')), url_for(locale: 'uk') %>
@@ -95,17 +98,17 @@
                 </thead>
                 <tbody>
                 <% @order_items.each do |item| %>
-                    <tr>
-                        <td><%= image_tag item.product.image_url, class: 'product-image' %></td>
-                        <td class='product_name'><%= item.product.product_name %></td>
-                        <td>
-                            <%= button_to '+', update_quantity_path(item.id, quantity: item.quantity + 1), method: :post, class: 'quantity-button' %>
-                            <span class="quantity"><%= item.quantity %></span>
-                            <%= button_to '-', update_quantity_path(item.id, quantity: item.quantity - 1), method: :post, class: 'quantity-button' if item.quantity > 1 %>
-                        </td>
-                        <td><%= item.product.price * item.quantity %> ₴</td>
-                        <td><%= button_to t('Видалити'), remove_from_cart_path(item.id), method: :delete, class: 'delete-button' %></td>
-                    </tr>
+                <tr>
+                    <td><%= image_tag item.product.image_url, class: 'product-image' %></td>
+                    <td class='product_name'><%= item.product.product_name %></td>
+                    <td>
+                    <%= button_to '+', update_quantity_path(item.id, quantity: item.quantity + 1), method: :post, class: 'quantity-button' %>
+                    <span class="quantity"><%= item.quantity %></span>
+                    <%= button_to '-', update_quantity_path(item.id, quantity: item.quantity - 1), method: :post, class: 'quantity-button' if item.quantity > 1 %>
+                    </td>
+                    <td><%= item.product.price * item.quantity %> ₴</td>
+                    <td><%= button_to t('Видалити'), remove_from_cart_path(item.id), method: :delete, class: 'delete-button' %></td>
+                </tr>
                 <% end %>
                 </tbody>
             </table>
@@ -116,39 +119,41 @@
 
             <div class="modal fade" id="checkoutModal" tabindex="-1" role="dialog" aria-labelledby="checkoutModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
-                    <div class="modal-content">
+                <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="checkoutModalLabel"><%= t('Оформлення замовлення') %></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <h5 class="modal-title" id="checkoutModalLabel"><%= t('Оформлення замовлення') %></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
-                        </button>
+                    </button>
                     </div>
                     <div class="modal-body">
-                        <%= form_with url: checkout_path, method: :post, local: true do |f| %>
+                    <%= form_with url: checkout_path, method: :post, local: true do |f| %>
                         <div class="form-group">
-                            <%= f.label :city, t('Місто') %>
-                            <%= f.text_field :city, class: 'form-control' %>
+                        <%= f.label :first_name, t('Ім\'я') %>
+                        <%= f.text_field :first_name, value: current_user.first_name, class: 'form-control' %>
                         </div>
                         <div class="form-group">
-                            <%= f.label :address, t('Адреса') %>
-                            <%= f.text_field :address, class: 'form-control' %>
+                        <%= f.label :last_name, t('Прізвище') %>
+                        <%= f.text_field :last_name, value: current_user.last_name, class: 'form-control' %>
                         </div>
-                        <!-- Add Stripe Elements for Apple Pay and Google Pay -->
                         <div class="form-group">
-                            <label for="card-element"><%= t('Спосіб оплати') %></label>
-                            <div id="card-element"><!-- A Stripe Element will be inserted here. --></div>
-                            <div id="card-errors" role="alert"></div>
+                        <%= f.label :city, t('Місто') %>
+                        <%= f.text_field :city, class: 'form-control' %>
+                        </div>
+                        <div class="form-group">
+                        <%= f.label :address, t('Адреса') %>
+                        <%= f.text_field :address, class: 'form-control' %>
                         </div>
                         <div class="modal-footer">
-                            <%= f.submit t('Оформити'), class: 'btn btn-primary' %>
+                        <%= f.submit t('Оформити'), class: 'btn btn-primary' %>
                         </div>
-                        <% end %>
+                    <% end %>
                     </div>
-                    </div>
+                </div>
                 </div>
             </div>
             <% else %>
-            <p><%= t('Ваш кошик порожній') %></p>
+                <p><%= t('Ваш кошик порожній') %></p>
             <% end %>
         </div>
     </main>

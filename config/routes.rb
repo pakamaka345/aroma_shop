@@ -24,8 +24,8 @@ Rails.application.routes.draw do
 
     get '/orders', to: 'orders#index'
     post '/orders/add_to_cart', to: 'orders#add_to_cart', as: 'add_to_cart'
-    post '/orders/checkout', to: 'orders#checkout', as: 'checkout'
     post 'update_quantity/:id', to: 'orders#update_quantity', as: 'update_quantity'
     delete '/orders/remove_from_cart/:id', to: 'orders#remove_from_cart', as: 'remove_from_cart'
+    post '/checkout', to: 'orders#checkout', as: 'checkout'
   end
 end

@@ -29,12 +29,15 @@
                         <li><a href="<%= login_path %>"><%= t('Увійти') %></a></li>
                     <% end %>
                     <li>
-                    <a href="<%= session[:user_id] ? '/orders' : login_path %>">
-                        <i class="material-icons">shopping_cart</i>
-                        <% if session[:user_id] %>
-                        <%= Order.find_by(user_id: session[:user_id]).order_items.count %>
-                        <% end %>
-                    </a>
+                        <a href="<%= session[:user_id] ? orders_path : login_path %>">
+                            <i class="material-icons">shopping_cart</i>
+                            <% if session[:user_id] %>
+                            <% pending_order = Order.find_by(user_id: session[:user_id], status: 'pending') %>
+                            <% if pending_order && pending_order.order_items.count > 0 %>
+                                <%= pending_order.order_items.count %>
+                            <% end %>
+                            <% end %>
+                        </a>
                     </li>
                     <li> 
                         <%= link_to image_tag(asset_path('ukraine.png')), url_for(locale: 'uk') %>

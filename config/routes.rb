@@ -7,7 +7,11 @@ Rails.application.routes.draw do
     get 'forgot_password', to: 'users#forgot_password'
     get '/register', to: 'users#new'
     post '/register', to: 'users#create'
-    get '/profile', to: 'users#profile'
+
+    get '/profile', to: 'profile#profile'
+    get '/profile/:id', to: 'profile#profile', as: 'user_profile'
+    resource :profile, controller: 'profile', only: [:show, :edit, :update, :create, :destroy]
+
     get '/logout', to: 'users#logout'
     resources :users, only: [:show, :edit, :update]
 

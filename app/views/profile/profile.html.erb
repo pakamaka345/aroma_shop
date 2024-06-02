@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= t('Профіль') %></title>
+  <%= stylesheet_link_tag 'profile.css' %>
+  <%= javascript_include_tag 'application' %>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-left">
+        <h1>ITAroma</h1>
+        <p><%= t('магазин ароматичних продуктів') %></p>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="/"><%= t('Головна') %></a></li>
+          <li><a href="/products"><%= t('Магазин') %></a></li>
+          <li><a href="#"><%= t('Про нас') %></a></li>
+          <li><a href="<%= session[:user_id] ? '/favourites' : login_path %>"><i class="material-icons">favorite</i></a></li>
+          <% if session[:user_id] %>
+            <li><a href="<%= profile_path %>"><i class="material-icons">person</i></a></li>
+          <% else %>
+            <li><a href="<%= login_path %>"><%= t('Увійти') %></a></li>
+          <% end %>
+          <li>
+            <a href="<%= session[:user_id] ? orders_path : login_path %>">
+              <i class="material-icons">shopping_cart</i>
+              <% if session[:user_id] %>
+                <% pending_order = Order.find_by(user_id: session[:user_id], status: 'pending') %>
+                <% if pending_order && pending_order.order_items.count > 0 %>
+                  <%= pending_order.order_items.count %>
+                <% end %>
+              <% end %>
+            </a>
+          </li>
+          <li> 
+            <%= link_to image_tag(asset_path('ukraine.png')), url_for(locale: 'uk') %>
+            <%= link_to image_tag(asset_path('united-kingdom.png')), url_for(locale: 'en') %>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-text">
+        <h2><%= t('Профіль') %></h2>
+        <style>
+          .hero {
+            position: relative;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 50px;
+          }
+          .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-image: url(<%= asset_path 'main.jpg' %>);
+            background-repeat: no-repeat;
+            background-size: cover;
+            filter: blur(2px); 
+            z-index: -1;
+          }
+        </style>
+      </div>
+    </section>
+    <div class="profile-container">
+      <div class="profile-header">
+        <div class="profile-avatar">
+          <i class="fas fa-user-circle fa-3x"></i>
+          <h3><%= current_user.first_name %></h3>
+        </div>
+        <div class="profile-info">
+          <p><%= t('Дата реєстрації') %>: <%= current_user.created_at.to_date %></p>
+          <p><%= t('Електронна пошта') %>: <%= current_user.email %></p>
+          <p><%= t('Номер телефону') %>: <%= current_user.phone_number %></p>
+        </div>
+      </div>
+      <div class="profile-buttons">
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <%= t('Мої попередні замовлення') %>
+          </button>
+          <div class="dropdown-menu dropdown-menu-bottom" aria-labelledby="dropdownMenuButton" style="height: auto; max-height: 300px; overflow-x: hidden;">
+            <% @orders.each do |order| %>
+              <div class="dropdown-item">
+                <p><%= t('Номер замовлення') %> № <%= order.id %> </p> 
+                <p> <%= order.created_at.to_date %></p>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th><%= t('Назва продукту') %></th>
+                      <th><%= t('Кількість') %></th>
+                      <th><%= t('Ціна') %> </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% order.order_items.each do |item| %>
+                      <tr>
+                        <td><%= item.product.product_name %></td>
+                        <td><%= item.quantity %></td>
+                        <td><%= item.product.price * item.quantity %> ₴</td>
+                      </tr>
+                    <% end %>
+                  </tbody>
+                </table>
+                <h6><%= t('Загальна вартість') %> <%= order.order_items.sum { |item| item.product.price * item.quantity } %> ₴</h6> <br>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal">
+          <%= t('Змінити мої дані') %>
+        </button>
+
+        <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="editProfileModalLabel"><%= t('Змінити мої дані') %></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <%= form_for(current_user, url: profile_path, method: :put) do |f| %>
+                  <div class="form-group">
+                    <%= f.label :username %>
+                    <%= f.text_field :username, class: 'form-control', value: current_user.username %>
+                  </div>
+                  <div class="form-group">
+                    <%= f.label :first_name %>
+                    <%= f.text_field :first_name, class: 'form-control', value: current_user.first_name %>
+                  </div>
+                  <div class="form-group">
+                    <%= f.label :second_name %>
+                    <%= f.text_field :last_name, class: 'form-control', value: current_user.last_name %>
+                  </div>
+                  <div class="form-group">
+                    <%= f.label :email %>
+                    <%= f.email_field :email, class: 'form-control', value: current_user.email %>
+                  </div>
+                  <div class="form-group">
+                    <%= f.label :phone_number %>
+                    <%= f.text_field :phone_number, class: 'form-control', value: current_user.phone_number %>
+                  </div>
+                  <div class="form-group">
+                    <%= f.label :address %>
+                    <%= f.text_field :address, class: 'form-control', value: current_user.address %>
+                  </div>
+                  <div class="form-group">
+                    <%= f.submit t('Зберегти зміни'), class: 'btn btn-primary' %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <% if current_user.admin? %>
+        <h2><%= t('Адмін-панель') %></h2>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">
+            <%= t('Додати нового користувача') %>
+          </button>
+
+          <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="addUserModalLabel"><%= t('Додати нового користувача') %></h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <%= form_for(User.new, url: profile_path, method: :post) do |f| %>
+                    <div class="form-group">
+                      <%= f.label :username %>
+                      <%= f.text_field :username, class: 'form-control', autocomplete: "off" %>
+                    </div>
+                    <div class="form-group">
+                      <%= f.label :email %>
+                      <%= f.email_field :email, class: 'form-control', autocomplete: "off" %>
+                    </div>
+                    <div class="form-group">
+                      <%= f.label :password %>
+                      <%= f.password_field :password, class: 'form-control', autocomplete: "off" %>
+                    </div>
+                    <div class="form-group">
+                      <%= f.submit t('Створити користувача'), class: 'btn btn-primary' %>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <%= t('Керувати користувачами') %>
+            </button>
+            <div class="dropdown-menu dropdown-menu-bottom" aria-labelledby="dropdownMenuButton" style="height: auto; max-height: 300px; overflow-x: hidden;">
+              <% @users.each do |user| %>
+                <div class="dropdown-item">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th><%= t('Ім\'я користувача') %></th>
+                        <th><%= t('Електронна пошта') %></th>
+                        <th><%= t('Дії') %></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><%= user.username %></td>
+                        <td><%= user.email %></td>
+                        <td>
+                          <%= link_to t('Видалити'), user_profile_path(user), method: :delete, data: { confirm: t('Ви впевнені?') } %>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+        <button onclick="window.location.href='/logout'"><%= t('Вийти') %></button>
+      </div>
+      
+    </div>
+  </main>
+  <footer>
+    <div class="container footer-container">
+      <div class="footer-left">
+        <h1>ITAroma</h1>
+        <p><%= t('магазин ароматичних продуктів') %></p>
+      </div>
+      <nav class="footer-nav">
+        <ul>
+          <li><a href="<%= root_path %>"><%= t('Головна') %></a></li>
+          <li><a href="<%= products_path %>"><%= t('Магазин') %></a></li>
+          <li><a href="#"><%= t('Про нас') %></a></li>
+        </ul>
+      </nav>
+      <div class="social-media">
+        <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.twitter.com"><i class="fab fa-twitter"></i></a>
+        <a href="https://www.facebook.com"><i class="fab fa-facebook-f"></i></a>
+      </div>
+      <div class="payment-methods">
+        <i class="fab fa-cc-visa"></i> Visa
+        <br>
+        <i class="fab fa-cc-mastercard"></i> Mastercard
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
